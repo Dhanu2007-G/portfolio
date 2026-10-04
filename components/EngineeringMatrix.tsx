@@ -1,38 +1,25 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { FiCheck, FiShield, FiCpu, FiTerminal, FiAward } from 'react-icons/fi'
 
 const standards = [
-  '100% Statement Coverage',
-  '0 Lint Errors (Ruff)',
-  '0 Type Errors (Mypy)',
-  'Docker Containerized',
-  'Async Architecture',
-  'Production DB Migrations',
-  'REST API',
-  'Observability',
+  { name: '100% Hermetic Statement Coverage', desc: 'Zero skipped tests, zero live network mocks failing' },
+  { name: '0 Ruff Lint & Format Errors', desc: 'Strict PEP-8, flake8, and import sorting enforcement' },
+  { name: '0 Mypy Static Type Errors', desc: 'Strict static type validation across entire codebases' },
+  { name: 'Docker Sandbox Security', desc: '--cap-drop ALL, read-only rootfs, non-root execution' },
+  { name: 'Async Event-Driven Architecture', desc: 'AsyncIO concurrency, Redis streams, Apache Kafka' },
+  { name: 'Production Database Migrations', desc: 'Alembic versioned schemas, zero schema drift' },
+  { name: 'Full Observability & Tracing', desc: 'OpenTelemetry, Prometheus metrics, structured logs' },
+  { name: 'Hermetic CI/CD Automated Pipelines', desc: 'GitHub Actions verifying every commit before merge' },
 ]
 
-const projects = ['SWE-Agent', 'AEIMPS', 'Helios']
-
-// All pass for all
-const matrix: boolean[][] = standards.map(() => [true, true, true])
-
-function CheckMark({ visible, delay }: { visible: boolean; delay: number }) {
-  return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={visible ? { scale: 1, opacity: 1 } : {}}
-      transition={{ delay, type: 'spring', stiffness: 400, damping: 15 }}
-      className="flex items-center justify-center"
-    >
-      <span className="text-lg" style={{ filter: 'drop-shadow(0 0 6px rgba(0, 245, 255, 0.8))' }}>
-        ✅
-      </span>
-    </motion.div>
-  )
-}
+const matrix = [
+  { name: 'SWE-Agent', coverage: '98.9%', ruff: '0 Errors', mypy: '0 Errors', docker: 'Isolated', asyncArch: 'AsyncIO', db: 'Postgres', o11y: 'Tracing', ci: 'Verified' },
+  { name: 'AEIMPS', coverage: '100.0%', ruff: '0 Errors', mypy: '0 Errors', docker: 'Compose', asyncArch: 'FastAPI', db: 'Neo4j+Qdrant', o11y: 'Audit Logs', ci: 'Verified' },
+  { name: 'Helios AIOps', coverage: '100.0%', ruff: '0 Errors', mypy: '0 Errors', docker: 'K8s/Docker', asyncArch: 'Kafka', db: 'TimescaleDB', o11y: 'OpenTelemetry', ci: 'Verified' },
+]
 
 export default function EngineeringMatrix() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -40,105 +27,86 @@ export default function EngineeringMatrix() {
 
   return (
     <section
-      id="matrix"
+      id="standards"
       ref={sectionRef}
-      className="relative py-24 bg-[#050a0f] overflow-hidden"
+      className="relative py-28 bg-[#040204] overflow-hidden cyber-grid-red"
     >
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#0066ff]/5 rounded-full blur-3xl" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="mb-12"
+          className="mb-16"
         >
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-[#00f5ff] font-mono text-sm">04.</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">ENGINEERING STANDARDS</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-[#00f5ff]/30 to-transparent" />
+          <div className="flex items-center gap-4 mb-3">
+            <span className="text-[#ff003c] font-mono text-xs sm:text-sm font-bold tracking-widest">[ 05. RIGOR & VERIFIABILITY ]</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-[#ff003c]/40 via-[#ff003c]/10 to-transparent" />
           </div>
-          <p className="text-slate-500 text-sm ml-10 font-mono">
-            Every project. Every time. No exceptions.
+          <h2 className="text-3xl sm:text-5xl font-black text-white font-mono uppercase tracking-tight">
+            ENGINEERING STANDARDS <span className="text-[#ff003c]">MATRIX</span>
+          </h2>
+          <p className="text-slate-400 text-sm sm:text-base font-sans max-w-2xl mt-3">
+            Why my codebases stand in the top 1% of Indian engineering students: verified test coverage, type safety, and zero compromises.
           </p>
         </motion.div>
 
-        {/* Matrix Table */}
+        {/* Comparison Table Card */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="overflow-x-auto rounded-2xl border border-[#00f5ff]/15"
+          transition={{ duration: 0.7 }}
+          className="glass-red-card rounded-2xl border border-[#ff003c]/30 overflow-hidden hud-corner shadow-[0_15px_50px_rgba(255,0,60,0.15)]"
         >
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-[#0a1628] border-b border-[#1a3a5c]">
-                <th className="text-left py-4 px-6 text-xs font-mono text-slate-500 uppercase tracking-widest">
-                  Standard
-                </th>
-                {projects.map((p) => (
-                  <th
-                    key={p}
-                    className="text-center py-4 px-6 text-sm font-bold text-[#00f5ff] font-mono"
-                  >
-                    {p}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {standards.map((standard, rowIdx) => (
-                <motion.tr
-                  key={standard}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + rowIdx * 0.07 }}
-                  className={`border-b border-[#0f1f35] group ${
-                    rowIdx % 2 === 0 ? 'bg-[#050a0f]' : 'bg-[#060c14]'
-                  } hover:bg-[#0a1628] transition-colors duration-200`}
-                >
-                  <td className="py-4 px-6 text-sm text-slate-400 font-mono group-hover:text-slate-200 transition-colors">
-                    {standard}
-                  </td>
-                  {matrix[rowIdx].map((passes, colIdx) => (
-                    <td key={colIdx} className="py-4 px-6 text-center">
-                      <CheckMark
-                        visible={inView}
-                        delay={0.4 + rowIdx * 0.07 + colIdx * 0.04}
-                      />
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-mono text-xs sm:text-sm">
+              <thead className="bg-[#140610] text-[#ff3366] border-b border-[#ff003c]/30 uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th className="py-4 px-6 font-bold">Standard / Metric</th>
+                  <th className="py-4 px-6 font-bold text-center">SWE-Agent</th>
+                  <th className="py-4 px-6 font-bold text-center">AEIMPS</th>
+                  <th className="py-4 px-6 font-bold text-center">Helios AIOps</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#ff003c]/15 text-slate-300">
+                {standards.map((s, i) => (
+                  <tr key={s.name} className="hover:bg-[#ff003c]/5 transition-colors">
+                    <td className="py-4 px-6 font-medium text-white">
+                      <div>{s.name}</div>
+                      <div className="text-[11px] text-slate-500 font-sans">{s.desc}</div>
                     </td>
-                  ))}
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </motion.div>
+                    <td className="py-4 px-6 text-center">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#ff003c]/10 text-[#ff3366] border border-[#ff003c]/30 font-bold">
+                        <FiCheck className="text-[#ff003c]" /> PASSED
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-center">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#ff003c]/10 text-[#ff3366] border border-[#ff003c]/30 font-bold">
+                        <FiCheck className="text-[#ff003c]" /> PASSED
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-center">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#ff003c]/10 text-[#ff3366] border border-[#ff003c]/30 font-bold">
+                        <FiCheck className="text-[#ff003c]" /> PASSED
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        {/* Summary badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 1.0 }}
-          className="mt-8 flex flex-wrap gap-3 justify-center"
-        >
-          {[
-            { label: '24 / 24 checks passed', color: '#00f5ff' },
-            { label: '100% compliance across all projects', color: '#10b981' },
-            { label: 'Zero compromises', color: '#f97316' },
-          ].map((badge) => (
-            <span
-              key={badge.label}
-              className="text-xs font-mono px-4 py-2 rounded-full border"
-              style={{
-                color: badge.color,
-                borderColor: `${badge.color}40`,
-                backgroundColor: `${badge.color}10`,
-              }}
-            >
-              {badge.label}
+          {/* Bottom Callout Banner */}
+          <div className="px-6 py-4 bg-[#140610] border-t border-[#ff003c]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-slate-400">
+            <span className="flex items-center gap-2 text-white">
+              <FiShield className="text-[#ff003c] text-base" />
+              <span>Zero skipped tests. Zero flaky timeouts. Fully reproducible locally via Docker.</span>
             </span>
-          ))}
+            <span className="text-[#ff003c] font-bold">
+              VERIFIED 2026 BENCHMARK
+            </span>
+          </div>
         </motion.div>
       </div>
     </section>

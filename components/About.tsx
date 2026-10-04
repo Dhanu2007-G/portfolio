@@ -2,92 +2,38 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { FiAward, FiBookOpen, FiFileText, FiCheck, FiCpu, FiCompass, FiShield, FiTrendingUp } from 'react-icons/fi'
+import Image from 'next/image'
 
-const stats = [
-  { value: 3, label: 'Production Projects', suffix: '' },
-  { value: 100, label: 'Test Coverage', suffix: '%' },
-  { value: 10, label: 'Microservices (Helios)', suffix: '+' },
-  { value: 8.7, label: 'CGPA', suffix: '', decimals: 1 },
-  { value: 5, label: 'Languages', suffix: '+' },
-  { value: 0, label: 'Lint Errors', suffix: '' },
-]
-
-const timelineItems = [
-  {
-    year: '2023',
-    title: 'Joined SRMIST',
-    desc: 'Started B.Tech CSE at SRM Institute of Science and Technology',
-    color: '#00f5ff',
-  },
-  {
-    year: '2024',
-    title: 'SWE-Agent',
-    desc: 'Built autonomous coding agent with LangGraph, Docker sandbox, and GitHub API integration',
-    color: '#0066ff',
-  },
-  {
-    year: '2024',
-    title: 'AEIMPS Platform',
-    desc: 'Engineered enterprise GraphRAG platform with Neo4j, Qdrant, SAML SSO & RBAC',
-    color: '#7c3aed',
-  },
-  {
-    year: '2025',
-    title: 'Helios AIOps',
-    desc: 'Designed 10-microservice AIOps platform with ML anomaly detection & LLM root cause analysis',
-    color: '#f97316',
-  },
-]
-
-function CountUp({ target, suffix, decimals = 0 }: { target: number; suffix: string; decimals?: number }) {
-  const [value, setValue] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true })
-
-  useEffect(() => {
-    if (!inView) return
-    const duration = 1500
-    const steps = 60
-    const stepTime = duration / steps
-    let current = 0
-    const increment = target / steps
-
-    const timer = setInterval(() => {
-      current += increment
-      if (current >= target) {
-        setValue(target)
-        clearInterval(timer)
-      } else {
-        setValue(parseFloat(current.toFixed(decimals)))
-      }
-    }, stepTime)
-
-    return () => clearInterval(timer)
-  }, [inView, target, decimals])
-
-  return (
-    <div ref={ref} className="text-3xl font-black text-[#00f5ff] cyan-text-glow">
-      {decimals > 0 ? value.toFixed(decimals) : Math.floor(value)}
-      {suffix}
-    </div>
-  )
+interface AboutProps {
+  onOpenResume?: () => void
 }
 
-export default function About() {
+const stats = [
+  { value: 3, label: 'Production Repos', suffix: '' },
+  { value: 100, label: 'Statement Coverage', suffix: '%' },
+  { value: 10, label: 'Helios Microservices', suffix: '+' },
+  { value: 8.7, label: 'SRMIST CGPA', suffix: '', decimals: 1 },
+  { value: 500, label: 'GDG Attendees Impacted', suffix: '+' },
+  { value: 0, label: 'Lint Errors Tolerated', suffix: '' },
+]
+
+export default function About({ onOpenResume }: AboutProps) {
   const sectionRef = useRef<HTMLElement>(null)
-  const inView = useInView(sectionRef, { once: true, margin: '-100px' })
+  const inView = useInView(sectionRef, { once: true, margin: '-80px' })
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-24 bg-[#050a0f] overflow-hidden"
+      className="relative py-28 bg-[#040204] overflow-hidden cyber-grid-red"
     >
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#00f5ff]/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0066ff]/5 rounded-full blur-3xl" />
+      {/* Background Ambience */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-[#ff003c]/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#99001f]/10 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -95,150 +41,196 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-[#00f5ff] font-mono text-sm">01.</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">ABOUT ME</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-[#00f5ff]/30 to-transparent" />
+          <div className="flex items-center gap-4 mb-3">
+            <span className="text-[#ff003c] font-mono text-xs sm:text-sm font-bold tracking-widest">[ 01. CORE DOSSIER ]</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-[#ff003c]/40 via-[#ff003c]/10 to-transparent" />
           </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-white font-mono uppercase tracking-tight">
+            ENGINEERING PHILOSOPHY & <span className="text-[#ff003c]">BACKGROUND</span>
+          </h2>
         </motion.div>
 
-        {/* Two column layout */}
-        <div className="grid lg:grid-cols-2 gap-12 mb-20">
-          {/* Bio */}
+        {/* Top Grid: Bio Dossier & Portrait Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-16">
+          
+          {/* Left: Deep Story & Philosophy (7 Cols) */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-7 glass-red-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 hud-corner"
           >
-            <div className="glass rounded-2xl p-8 border border-[#00f5ff]/10 h-full">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-2 h-2 rounded-full bg-[#00f5ff] animate-pulse" />
-                <span className="text-[#00f5ff] font-mono text-xs uppercase tracking-widest">Bio</span>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-[#ff003c] font-mono text-xs uppercase tracking-wider">
+                <FiCompass />
+                <span>ARCHITECTURAL MINDSET</span>
               </div>
-              <p className="text-slate-300 leading-relaxed text-base mb-6">
-                I&apos;m a <span className="text-[#00f5ff] font-semibold">3rd-year CSE student at SRMIST</span>{' '}
-                (CGPA: <span className="text-[#00f5ff] font-semibold">8.7</span>) who builds systems that actually
-                work in production. I don&apos;t prototype — I ship{' '}
-                <span className="text-white font-semibold">autonomous AI agents</span>,{' '}
-                <span className="text-white font-semibold">enterprise search platforms</span>, and{' '}
-                <span className="text-white font-semibold">distributed AIOps systems</span> with 100% test
-                coverage, zero lint errors, and full observability.
-              </p>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                I&apos;m training to be the engineer who{' '}
-                <span className="text-[#00f5ff]">solves the problem</span>, not the one who describes it.
+              
+              <h3 className="text-xl sm:text-2xl font-bold text-white font-mono leading-snug">
+                I do not build fragile proof-of-concepts. I engineer resilient distributed systems.
+              </h3>
+
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Currently pursuing my B.Tech in Computer Science (Artificial Intelligence & Machine Learning) at <strong className="text-white">SRM Institute of Science and Technology</strong> with an <strong className="text-[#ff003c]">8.7 / 10.0 CGPA</strong>. My work sits at the exact intersection of autonomous AI agent execution, enterprise knowledge graphs (GraphRAG), and mission-critical telemetry engineering.
               </p>
 
-              {/* Info chips */}
-              <div className="mt-6 flex flex-wrap gap-2">
-                {['SRMIST', 'CSE', '3rd Year', 'CGPA: 8.7', 'Chennai'].map((item) => (
-                  <span
-                    key={item}
-                    className="px-3 py-1 text-xs font-mono border border-[#00f5ff]/20 bg-[#00f5ff]/5 text-[#00f5ff]/70 rounded-full"
-                  >
-                    {item}
-                  </span>
-                ))}
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                While most undergraduate portfolios showcase generic wrappers around third-party APIs, my systems feature <strong className="text-white">custom Docker sandboxes with dropped Linux capabilities</strong>, <strong className="text-white">tri-hybrid retrieval pipelines with reciprocal rank fusion</strong>, and <strong className="text-white">event-driven streaming pipelines on Apache Kafka and TimescaleDB</strong>.
+              </p>
+            </div>
+
+            {/* Core Competency Matrix Pills */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-[#ff003c]/10 text-[#ff003c]">
+                  <FiCpu className="text-base" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono font-bold text-white">Agentic Orchestration</div>
+                  <div className="text-[11px] text-slate-400">LangGraph state machines, ReAct loops & AST symbol analysis</div>
+                </div>
               </div>
+
+              <div className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-[#ff003c]/10 text-[#ff003c]">
+                  <FiTrendingUp className="text-base" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono font-bold text-white">GraphRAG & Vectors</div>
+                  <div className="text-[11px] text-slate-400">Neo4j Cypher walks + Qdrant dense/sparse hybrid search</div>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-[#ff003c]/10 text-[#ff003c]">
+                  <FiShield className="text-base" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono font-bold text-white">Zero Tolerance CI/CD</div>
+                  <div className="text-[11px] text-slate-400">100% statement coverage, hermetic mocking, 0 Ruff lint errors</div>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-[#ff003c]/10 text-[#ff003c]">
+                  <FiAward className="text-base" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono font-bold text-white">Community & GDG</div>
+                  <div className="text-[11px] text-slate-400">Technical member organizing workshops for 500+ attendees</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Bar */}
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              <button
+                onClick={onOpenResume}
+                className="px-5 py-2.5 rounded-xl bg-[#ff003c] text-white text-xs font-mono font-bold flex items-center gap-2 hover:bg-[#ff1a40] shadow-[0_0_20px_rgba(255,0,60,0.5)] transition-all"
+              >
+                <FiFileText />
+                <span>OPEN OFFICIAL RESUME</span>
+              </button>
+              <span className="text-xs text-slate-400 font-mono">
+                Updated for 2025/2026 AI Internships
+              </span>
             </div>
           </motion.div>
 
-          {/* Stats Grid */}
+          {/* Right: Academic Record & Credentials Dossier (5 Cols) */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-5 space-y-4 flex flex-col justify-between"
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={inView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.4 + i * 0.1, type: 'spring' }}
-                  className="glass rounded-xl p-4 border border-[#00f5ff]/10 hover:border-[#00f5ff]/30 transition-colors duration-300 group"
-                >
-                  <CountUp target={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
-                  <p className="text-slate-500 text-xs mt-1 group-hover:text-slate-400 transition-colors">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
+            {/* Academic Breakdown Card */}
+            <div className="glass-red-card rounded-2xl p-6 space-y-5">
+              <div className="flex items-center justify-between border-b border-[#ff003c]/20 pb-3">
+                <div className="flex items-center gap-2 text-white font-mono font-bold text-sm">
+                  <FiBookOpen className="text-[#ff003c]" />
+                  <span>ACADEMIC FOUNDATION</span>
+                </div>
+                <span className="text-[10px] font-mono text-[#ff003c] px-2 py-0.5 rounded bg-[#ff003c]/10 border border-[#ff003c]/30">
+                  TOP 5% TIER
+                </span>
+              </div>
+
+              {/* SRMIST */}
+              <div className="space-y-1.5 border-l-2 border-[#ff003c] pl-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-white font-mono">SRM Institute of Science & Tech</h4>
+                  <span className="text-xs font-mono text-slate-400">2024 – 2028</span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  B.Tech in Computer Science & Engineering (AI & Machine Learning)
+                </p>
+                <div className="text-xs font-mono text-[#ff003c] font-black">
+                  CGPA: 8.7 / 10.0
+                </div>
+                <p className="text-[11px] text-slate-400 pt-1">
+                  Coursework: Deep Learning, NLP, Distributed Systems, Data Structures & Algorithms, DBMS, Operating Systems.
+                </p>
+              </div>
+
+              {/* Class XII */}
+              <div className="space-y-1 border-l-2 border-[#b3002a]/60 pl-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-white font-mono">Ashwamedha Junior College, AP</h4>
+                  <span className="text-xs font-mono text-slate-400">Class XII (AP Inter)</span>
+                </div>
+                <div className="text-xs font-mono text-slate-200">
+                  Score: <strong className="text-white">935 / 1000</strong> (<span className="text-[#ff003c]">93.5%</span>)
+                </div>
+                <p className="text-[10px] text-slate-400">Board of Intermediate Education, Andhra Pradesh</p>
+              </div>
+
+              {/* Class X */}
+              <div className="space-y-1 border-l-2 border-[#b3002a]/40 pl-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-white font-mono">JCR Chaitanya High School, AP</h4>
+                  <span className="text-xs font-mono text-slate-400">Class X (AP SSC)</span>
+                </div>
+                <div className="text-xs font-mono text-slate-200">
+                  Score: <strong className="text-white">552 / 600</strong> (<span className="text-[#ff003c]">92.0%</span>)
+                </div>
+                <p className="text-[10px] text-slate-400">Board of Secondary Education, Andhra Pradesh</p>
+              </div>
             </div>
 
-            {/* Languages */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.9 }}
-              className="mt-4 glass rounded-xl p-4 border border-[#0066ff]/20"
-            >
-              <p className="text-xs text-slate-500 font-mono mb-3">$ languages</p>
-              <div className="flex flex-wrap gap-2">
-                {['Python', 'TypeScript', 'Go', 'Rust', 'Java', 'SQL'].map((lang) => (
-                  <span
-                    key={lang}
-                    className="px-2 py-0.5 text-xs font-mono bg-[#0066ff]/10 border border-[#0066ff]/30 text-[#0066ff] rounded"
-                  >
-                    {lang}
-                  </span>
-                ))}
+            {/* Verified Badges Banner */}
+            <div className="glass-red-card rounded-2xl p-5 border border-[#ff003c]/30 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#ff003c] to-[#99001f] flex items-center justify-center text-white text-xl shadow-[0_0_20px_rgba(255,0,60,0.5)] shrink-0">
+                🏆
               </div>
-            </motion.div>
+              <div>
+                <div className="text-xs font-mono text-[#ff003c] font-bold">GOOGLE CLOUD / DEEPMIND CREDENTIAL</div>
+                <div className="text-sm font-bold text-white">Gemini Enterprise Ready Badge (GEAR)</div>
+                <div className="text-[11px] text-slate-400 font-mono">Verified Google Developer Profile & GDG Member</div>
+              </div>
+            </div>
           </motion.div>
         </div>
 
-        {/* Timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.5 }}
-        >
-          <h3 className="text-lg font-bold text-white mb-8 font-mono">
-            <span className="text-[#00f5ff]">/</span> Timeline
-          </h3>
-          <div className="relative">
-            {/* Line */}
-            <div className="absolute left-4 sm:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-[#00f5ff]/50 via-[#0066ff]/30 to-transparent" />
-
-            <div className="space-y-8">
-              {timelineItems.map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.6 + i * 0.15 }}
-                  className="relative flex gap-6 sm:gap-12 pl-12 sm:pl-20"
-                >
-                  {/* Dot */}
-                  <div
-                    className="absolute left-2 sm:left-6 top-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                    style={{ borderColor: item.color, backgroundColor: `${item.color}22` }}
-                  >
-                    <div
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: item.color }}
-                    />
-                  </div>
-
-                  {/* Year */}
-                  <span
-                    className="text-xs font-mono font-bold shrink-0 mt-1"
-                    style={{ color: item.color }}
-                  >
-                    {item.year}
-                  </span>
-
-                  {/* Content */}
-                  <div>
-                    <h4 className="text-white font-semibold text-sm">{item.title}</h4>
-                    <p className="text-slate-500 text-xs mt-1">{item.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        {/* Live Metrics Counter Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.1 * i, duration: 0.5 }}
+              className="glass-red p-5 rounded-2xl border border-[#ff003c]/20 hover:border-[#ff003c]/60 text-center transition-all group shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+            >
+              <div className="text-3xl sm:text-4xl font-black font-mono text-[#ff003c] group-hover:scale-105 transition-transform drop-shadow-[0_0_15px_rgba(255,0,60,0.5)]">
+                {stat.value}{stat.suffix}
+              </div>
+              <div className="text-xs font-mono text-slate-400 mt-1 uppercase tracking-wider">
+                {stat.label}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )

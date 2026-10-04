@@ -2,53 +2,32 @@
 
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FiMail, FiGithub, FiLinkedin, FiSend, FiCheck } from 'react-icons/fi'
+import { FiMail, FiGithub, FiLinkedin, FiPhone, FiMapPin, FiSend, FiCheck, FiFileText, FiAward } from 'react-icons/fi'
 
-const contactLinks = [
-  {
-    label: 'Email',
-    value: 'dhanwanthjangam@gmail.com',
-    href: 'mailto:dhanwanthjangam@gmail.com',
-    icon: FiMail,
-    color: '#00f5ff',
-    glow: 'rgba(0, 245, 255, 0.3)',
-  },
-  {
-    label: 'LinkedIn',
-    value: 'jangam-dhanwanth',
-    href: 'https://www.linkedin.com/in/jangam-dhanwanth-766437319/',
-    icon: FiLinkedin,
-    color: '#0066ff',
-    glow: 'rgba(0, 102, 255, 0.3)',
-  },
-  {
-    label: 'GitHub',
-    value: 'Dhanu2007-G',
-    href: 'https://github.com/Dhanu2007-G',
-    icon: FiGithub,
-    color: '#7c3aed',
-    glow: 'rgba(124, 58, 237, 0.3)',
-  },
-]
+interface ContactProps {
+  onOpenResume?: () => void
+}
 
-export default function Contact() {
+export default function Contact({ onOpenResume }: ContactProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const inView = useInView(sectionRef, { once: true, margin: '-80px' })
 
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const [copiedPhone, setCopiedPhone] = useState(false)
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  function handleCopyPhone() {
+    navigator.clipboard.writeText('+91 9849800927')
+    setCopiedPhone(true)
+    setTimeout(() => setCopiedPhone(false), 2000)
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitting(true)
-    // Mock submit — replace with actual form service
-    await new Promise((r) => setTimeout(r, 1200))
-    setSubmitting(false)
+    // Open direct mailto
+    const subject = encodeURIComponent(`Internship Inquiry: ${form.name}`)
+    const body = encodeURIComponent(`From: ${form.name} (${form.email})\n\nMessage:\n${form.message}`)
+    window.location.href = `mailto:dhanwanthjangam@gmail.com?subject=${subject}&body=${body}`
     setSubmitted(true)
   }
 
@@ -56,201 +35,216 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-32 bg-[#050a0f] overflow-hidden"
+      className="relative py-28 bg-[#040204] overflow-hidden cyber-grid-red"
     >
-      {/* Background gradient blob */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(0,245,255,0.06) 0%, rgba(0,102,255,0.04) 50%, transparent 70%)',
-          }}
-        />
-      </div>
+      <div className="absolute bottom-0 left-1/3 w-[500px] h-[500px] bg-[#ff003c]/12 rounded-full blur-[150px] pointer-events-none" />
 
-      {/* Cyber grid */}
-      <div className="absolute inset-0 cyber-grid opacity-20" />
-
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="mb-16 text-center max-w-3xl mx-auto"
         >
-          <div className="flex items-center gap-4 justify-center mb-6">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#00f5ff]/30" />
-            <span className="text-[#00f5ff] font-mono text-sm">07.</span>
-            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#00f5ff]/30" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1c0817] border border-[#ff003c]/40 text-xs font-mono text-[#ff3366] font-bold mb-4">
+            <span className="w-2 h-2 rounded-full bg-[#ff003c] animate-pulse" />
+            COMMUNICATION CHANNELS // OPEN
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white mb-4">
-            GET IN TOUCH
+          <h2 className="text-3xl sm:text-5xl font-black text-white font-mono uppercase tracking-tight">
+            INITIATE <span className="text-[#ff003c]">COMMUNICATION</span>
           </h2>
-          <p className="text-xl sm:text-2xl text-[#00f5ff]/70 font-mono italic">
-            &ldquo;Let&rsquo;s build something that matters.&rdquo;
-          </p>
-          <p className="text-slate-500 text-sm mt-4 max-w-md mx-auto">
-            Open to internships, research collaborations, and ambitious engineering challenges.
+          <p className="text-slate-400 text-sm sm:text-base font-sans mt-3">
+            Looking for an elite AI / Systems Engineering Intern who writes production-ready code from Day 1? Let’s connect immediately.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Contact buttons */}
-          <div className="flex flex-col gap-4">
-            {contactLinks.map((link, i) => {
-              const Icon = link.icon
-              return (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  target={link.href.startsWith('mailto') ? undefined : '_blank'}
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  whileHover={{
-                    scale: 1.02,
-                    boxShadow: `0 0 30px ${link.glow}, 0 0 60px ${link.glow.replace('0.3', '0.1')}`,
-                  }}
-                  className="flex items-center gap-4 p-5 glass rounded-2xl border border-[#1a3a5c] hover:border-opacity-50 transition-all duration-300 group"
-                  style={{ '--hover-border': link.color } as React.CSSProperties}
+        {/* Contact Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Left Details (5 Cols) */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-5 glass-red-card rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col justify-between hud-corner"
+          >
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-white font-mono flex items-center gap-2">
+                <span>DIRECT REACH</span>
+                <span className="text-xs text-[#ff003c] font-mono px-2 py-0.5 rounded bg-[#ff003c]/10 border border-[#ff003c]/30">
+                  FAST RESPONSE
+                </span>
+              </h3>
+
+              <div className="space-y-3 font-mono text-xs sm:text-sm">
+                {/* Email */}
+                <a
+                  href="mailto:dhanwanthjangam@gmail.com"
+                  className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 hover:border-[#ff003c]/60 flex items-center gap-3.5 text-slate-300 hover:text-white transition-all group"
                 >
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: `${link.color}15`, border: `1px solid ${link.color}40` }}
-                  >
-                    <Icon size={20} style={{ color: link.color }} />
+                  <div className="p-2.5 rounded-lg bg-[#ff003c]/10 text-[#ff003c] group-hover:bg-[#ff003c] group-hover:text-white transition-colors">
+                    <FiMail className="text-base" />
+                  </div>
+                  <div className="overflow-hidden">
+                    <div className="text-[10px] text-slate-500 uppercase">Primary Email</div>
+                    <div className="truncate text-white font-semibold">dhanwanthjangam@gmail.com</div>
+                  </div>
+                </a>
+
+                {/* College Email */}
+                <a
+                  href="mailto:dj1633@srmist.edu.in"
+                  className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 hover:border-[#ff003c]/60 flex items-center gap-3.5 text-slate-300 hover:text-white transition-all group"
+                >
+                  <div className="p-2.5 rounded-lg bg-[#ff003c]/10 text-[#ff003c] group-hover:bg-[#ff003c] group-hover:text-white transition-colors">
+                    <FiMail className="text-base" />
+                  </div>
+                  <div className="overflow-hidden">
+                    <div className="text-[10px] text-slate-500 uppercase">Institutional Email</div>
+                    <div className="truncate text-white font-semibold">dj1633@srmist.edu.in</div>
+                  </div>
+                </a>
+
+                {/* Phone */}
+                <div
+                  onClick={handleCopyPhone}
+                  className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 hover:border-[#ff003c]/60 flex items-center justify-between gap-3.5 text-slate-300 hover:text-white transition-all cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="p-2.5 rounded-lg bg-[#ff003c]/10 text-[#ff003c] group-hover:bg-[#ff003c] group-hover:text-white transition-colors">
+                      <FiPhone className="text-base" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-500 uppercase">Mobile & WhatsApp</div>
+                      <div className="text-white font-semibold">+91 9849800927</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#ff003c] px-2 py-1 rounded bg-[#ff003c]/10 border border-[#ff003c]/30">
+                    {copiedPhone ? 'COPIED!' : 'CLICK TO COPY'}
+                  </span>
+                </div>
+
+                {/* Location */}
+                <div className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/20 flex items-center gap-3.5 text-slate-300">
+                  <div className="p-2.5 rounded-lg bg-[#ff003c]/10 text-[#ff003c]">
+                    <FiMapPin className="text-base" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-mono mb-0.5">{link.label}</p>
-                    <p className="text-slate-200 text-sm font-medium group-hover:text-white transition-colors">
-                      {link.value}
-                    </p>
+                    <div className="text-[10px] text-slate-500 uppercase">Locations</div>
+                    <div className="text-white font-semibold">Chennai / Andhra Pradesh, India</div>
                   </div>
-                  <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: link.color, boxShadow: `0 0 8px ${link.color}` }}
-                    />
-                  </div>
-                </motion.a>
-              )
-            })}
-          </div>
+                </div>
+              </div>
+            </div>
 
-          {/* Contact form */}
+            {/* Socials & Resume CTA */}
+            <div className="pt-4 border-t border-[#ff003c]/20 space-y-3">
+              <button
+                onClick={onOpenResume}
+                className="w-full py-3 rounded-xl bg-[#ff003c] text-white font-mono font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#ff1a40] shadow-[0_0_20px_rgba(255,0,60,0.5)] transition-all"
+              >
+                <FiFileText />
+                <span>INSPECT VERIFIED RESUME (PDF)</span>
+              </button>
+
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://www.linkedin.com/in/jangam-dhanwanth-766437319/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#160612] text-slate-200 border border-[#ff003c]/30 hover:border-[#ff003c] hover:text-[#ff003c] text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all"
+                >
+                  <FiLinkedin />
+                  <span>LinkedIn</span>
+                </a>
+                <a
+                  href="https://github.com/Dhanu2007-G"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#160612] text-slate-200 border border-[#ff003c]/30 hover:border-[#ff003c] hover:text-[#ff003c] text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all"
+                >
+                  <FiGithub />
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Message Form (7 Cols) */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.4 }}
-            className="glass rounded-2xl p-6 border border-[#00f5ff]/15"
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-7 glass-red-card rounded-2xl p-6 sm:p-10 border border-[#ff003c]/30 flex flex-col justify-between"
           >
-            {submitted ? (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center py-8"
+            <div className="space-y-2 mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-white font-mono">
+                SEND DIRECT RECRUITER TRANSMISSION
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 font-sans">
+                Submitting directly launches a pre-filled client mailto payload directly to <strong className="text-white">dhanwanthjangam@gmail.com</strong>.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4 font-mono text-xs sm:text-sm">
+              <div>
+                <label className="block text-[11px] text-[#ff3366] uppercase mb-1.5 font-bold">
+                  Your Name / Organization *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder="e.g. Sarvam AI / Razorpay Recruiting"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0f040c] border border-[#ff003c]/30 text-white focus:outline-none focus:border-[#ff003c] transition-colors placeholder:text-slate-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-[#ff3366] uppercase mb-1.5 font-bold">
+                  Your Work Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="recruiter@company.com"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0f040c] border border-[#ff003c]/30 text-white focus:outline-none focus:border-[#ff003c] transition-colors placeholder:text-slate-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-[#ff3366] uppercase mb-1.5 font-bold">
+                  Transmission / Internship Opportunity *
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  placeholder="Tell me about the role, technical challenge, or team..."
+                  className="w-full px-4 py-3 rounded-xl bg-[#0f040c] border border-[#ff003c]/30 text-white focus:outline-none focus:border-[#ff003c] transition-colors placeholder:text-slate-600 resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 rounded-xl bg-[#ff003c] text-white font-mono font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#ff1a40] shadow-[0_0_25px_rgba(255,0,60,0.6)] transition-all"
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                  className="w-16 h-16 rounded-full bg-[#00f5ff]/10 border border-[#00f5ff]/30 flex items-center justify-center mb-4"
-                >
-                  <FiCheck size={32} className="text-[#00f5ff]" />
-                </motion.div>
-                <h3 className="text-white font-bold text-lg mb-2">Message Received!</h3>
-                <p className="text-slate-500 text-sm">
-                  Thanks for reaching out. I&apos;ll get back to you soon.
-                </p>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <h3 className="text-sm font-mono text-slate-400 mb-2">
-                  <span className="text-[#00f5ff]">&gt;</span> Send a message
-                </h3>
-                <div>
-                  <label className="text-xs font-mono text-slate-500 mb-1 block">name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Your name"
-                    className="w-full bg-[#0f1f35] border border-[#1a3a5c] focus:border-[#00f5ff]/50 rounded-lg px-4 py-3 text-sm text-slate-200 outline-none transition-colors duration-200 placeholder:text-slate-600 font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-mono text-slate-500 mb-1 block">email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className="w-full bg-[#0f1f35] border border-[#1a3a5c] focus:border-[#00f5ff]/50 rounded-lg px-4 py-3 text-sm text-slate-200 outline-none transition-colors duration-200 placeholder:text-slate-600 font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-mono text-slate-500 mb-1 block">message</label>
-                  <textarea
-                    name="message"
-                    required
-                    rows={4}
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder="What would you like to build together?"
-                    className="w-full bg-[#0f1f35] border border-[#1a3a5c] focus:border-[#00f5ff]/50 rounded-lg px-4 py-3 text-sm text-slate-200 outline-none transition-colors duration-200 placeholder:text-slate-600 font-mono resize-none"
-                  />
-                </div>
-                <motion.button
-                  type="submit"
-                  disabled={submitting}
-                  whileHover={{ scale: submitting ? 1 : 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 bg-[#00f5ff] text-[#050a0f] font-bold py-3 rounded-lg text-sm transition-all duration-200 disabled:opacity-60"
-                  style={{ boxShadow: '0 0 20px rgba(0, 245, 255, 0.3)' }}
-                >
-                  {submitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-[#050a0f]/30 border-t-[#050a0f] rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <FiSend size={14} />
-                      Send Message
-                    </>
-                  )}
-                </motion.button>
-              </form>
-            )}
+                <FiSend />
+                <span>SEND DIRECT TRANSMISSION</span>
+              </button>
+            </form>
+
+            <div className="pt-4 border-t border-[#ff003c]/15 text-[11px] font-mono text-slate-500 text-center">
+              Response SLA: &lt; 12 Hours • Confidential Dossier
+            </div>
           </motion.div>
         </div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.8 }}
-          className="mt-20 text-center"
-        >
-          <div className="section-divider mb-8" />
-          <p className="text-slate-600 text-xs font-mono">
-            Built with Next.js 14, TypeScript, Tailwind CSS & Framer Motion
-          </p>
-          <p className="text-slate-700 text-xs font-mono mt-1">
-            © 2025 Jangam Dhanwanth. All rights reserved.
-          </p>
-        </motion.div>
       </div>
     </section>
   )

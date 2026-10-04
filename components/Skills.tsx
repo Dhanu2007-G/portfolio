@@ -1,236 +1,258 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { FiTerminal, FiCornerDownLeft, FiCpu, FiDatabase, FiServer, FiLayers, FiCheckCircle } from 'react-icons/fi'
 
 interface SkillCategory {
+  category: string
   command: string
-  output: string
+  icon: typeof FiCpu
   color: string
+  skills: string[]
 }
 
 const skillCategories: SkillCategory[] = [
   {
-    command: 'skills --category languages',
-    output: 'Python | TypeScript | Go | Rust | Java | SQL',
-    color: '#00f5ff',
+    category: 'Agentic AI & LLM Systems',
+    command: 'skills --fetch agentic-ai',
+    icon: FiCpu,
+    color: '#ff003c',
+    skills: [
+      'LangGraph',
+      'Multi-Agent State Machines',
+      'ReAct Loops',
+      'LangChain',
+      'LlamaIndex',
+      'Anthropic Claude API',
+      'Gemini 2.0 / 3.8 API',
+      'OpenAI API',
+      'Groq Inference',
+      'Prompt Engineering & Structured Outputs',
+    ],
   },
   {
-    command: 'skills --category ai-ml',
-    output: 'LangGraph | LangChain | RAG | GraphRAG | LLMs | Transformers | LSTM | Isolation Forest',
-    color: '#7c3aed',
+    category: 'GraphRAG & Vector Databases',
+    command: 'skills --fetch rag-vectors',
+    icon: FiDatabase,
+    color: '#ff3366',
+    skills: [
+      'GraphRAG',
+      'Neo4j (Cypher Queries)',
+      'Qdrant Vector DB',
+      'Tri-Hybrid Retrieval',
+      'Reciprocal Rank Fusion (RRF)',
+      'Dense BGE Embeddings',
+      'Sparse BGE-M3 Lexical Tokens',
+      'AST Call Hierarchies',
+    ],
   },
   {
-    command: 'skills --category infrastructure',
-    output: 'Docker | Kubernetes | Apache Kafka | Redis | PostgreSQL | Neo4j | Qdrant | TimescaleDB',
-    color: '#0066ff',
+    category: 'Core AI, ML & NLP',
+    command: 'skills --fetch ml-nlp',
+    icon: FiLayers,
+    color: '#e11d48',
+    skills: [
+      'PyTorch',
+      'Hugging Face (Transformers)',
+      'scikit-learn',
+      'Sentence Transformers',
+      'Vector Embeddings (BGE)',
+      'Isolation Forests',
+      'Drain3 Log Clustering',
+      'Cox Proportional Hazards',
+    ],
   },
   {
-    command: 'skills --category observability',
-    output: 'OpenTelemetry | Prometheus | Grafana | Distributed Tracing',
-    color: '#f97316',
-  },
-  {
-    command: 'skills --category frameworks',
-    output: 'FastAPI | Next.js 14 | React | Tailwind | SQLAlchemy | Alembic',
-    color: '#10b981',
-  },
-  {
-    command: 'skills --category testing',
-    output: 'Pytest | 100% Coverage | Ruff | Mypy | Zero Lint Errors',
-    color: '#f59e0b',
+    category: 'Backend & Cloud Infrastructure',
+    command: 'skills --fetch backend-infra',
+    icon: FiServer,
+    color: '#be123c',
+    skills: [
+      'Python (AsyncIO, OOP)',
+      'FastAPI',
+      'Docker (Container Sandboxing)',
+      'PostgreSQL & SQLAlchemy',
+      'Redis Streams',
+      'Apache Kafka',
+      'TimescaleDB',
+      'Linux / Bash Scripting',
+      'Git / GitHub Actions CI',
+    ],
   },
 ]
 
-function TerminalLine({
-  category,
-  delay,
-  visible,
-}: {
-  category: SkillCategory
-  delay: number
-  visible: boolean
-}) {
-  const [cmdText, setCmdText] = useState('')
-  const [outText, setOutText] = useState('')
-  const [showOutput, setShowOutput] = useState(false)
-
-  useEffect(() => {
-    if (!visible) return
-
-    let cmdTimer: ReturnType<typeof setTimeout>
-    let outTimer: ReturnType<typeof setTimeout>
-
-    cmdTimer = setTimeout(() => {
-      let i = 0
-      const interval = setInterval(() => {
-        setCmdText(category.command.slice(0, i + 1))
-        i++
-        if (i >= category.command.length) {
-          clearInterval(interval)
-          setShowOutput(true)
-
-          let j = 0
-          outTimer = setTimeout(() => {
-            const outInterval = setInterval(() => {
-              setOutText(category.output.slice(0, j + 1))
-              j++
-              if (j >= category.output.length) clearInterval(outInterval)
-            }, 12)
-          }, 200)
-        }
-      }, 20)
-    }, delay)
-
-    return () => {
-      clearTimeout(cmdTimer)
-      clearTimeout(outTimer)
-    }
-  }, [visible, category, delay])
-
-  return (
-    <div className="mb-4">
-      <div className="flex items-start gap-2">
-        <span className="text-[#00f5ff] font-mono text-sm select-none">$</span>
-        <span className="font-mono text-sm text-slate-200">{cmdText}</span>
-        {cmdText.length < category.command.length && visible && (
-          <span className="typing-cursor" />
-        )}
-      </div>
-      {showOutput && (
-        <div className="flex items-start gap-2 mt-1 ml-4">
-          <span style={{ color: category.color }} className="font-mono text-sm select-none">
-            →
-          </span>
-          <span className="font-mono text-sm" style={{ color: category.color }}>
-            {outText}
-          </span>
-        </div>
-      )}
-    </div>
-  )
-}
-
 export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null)
-  const inView = useInView(sectionRef, { once: true, margin: '-100px' })
-  const [visibleCount, setVisibleCount] = useState(0)
+  const inView = useInView(sectionRef, { once: true, margin: '-80px' })
 
-  useEffect(() => {
-    if (!inView) return
-    const timers: ReturnType<typeof setTimeout>[] = []
-    skillCategories.forEach((_, i) => {
-      const t = setTimeout(() => setVisibleCount(i + 1), i * 1200)
-      timers.push(t)
-    })
-    return () => timers.forEach(clearTimeout)
-  }, [inView])
+  const [activeTab, setActiveTab] = useState(0)
+  const [terminalInput, setTerminalInput] = useState('')
+  const [customOutput, setCustomOutput] = useState<string | null>(null)
+
+  function handleCommandSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const cmd = terminalInput.trim().toLowerCase()
+    if (!cmd) return
+
+    if (cmd === 'clear') {
+      setCustomOutput(null)
+    } else if (cmd === 'help') {
+      setCustomOutput(
+        'AVAILABLE COMMANDS:\n  skills         - List all technical categories\n  agentic        - Inspect Agentic AI state stack\n  rag            - Inspect GraphRAG architecture\n  audit          - Run test coverage audit\n  clear          - Reset terminal buffer'
+      )
+    } else if (cmd.includes('agentic')) {
+      setActiveTab(0)
+      setCustomOutput('SWITCHED CONTEXT: Agentic AI & State Machines')
+    } else if (cmd.includes('rag')) {
+      setActiveTab(1)
+      setCustomOutput('SWITCHED CONTEXT: GraphRAG & Vector Databases')
+    } else if (cmd.includes('audit')) {
+      setCustomOutput(
+        'AUDIT REPORT [VERIFIED 2026]:\n  SWE-Agent    : 98.9% Coverage (340+ tests) | 0 Ruff Errors | 0 Mypy Errors\n  AEIMPS       : 100.0% Statement Coverage   | 0 Ruff Errors | 0 Mypy Errors\n  Helios AIOps : 100.0% Hermetic Coverage    | 0 Ruff Errors | 0 Mypy Errors\nSTATUS: ALL SYSTEMS GREEN.'
+      )
+    } else {
+      setCustomOutput(`Unknown command: '${cmd}'. Type 'help' for available commands.`)
+    }
+    setTerminalInput('')
+  }
 
   return (
     <section
       id="skills"
       ref={sectionRef}
-      className="relative py-24 bg-[#050a0f] overflow-hidden"
+      className="relative py-28 bg-[#040204] overflow-hidden cyber-grid-red"
     >
-      <div className="absolute top-0 left-0 w-96 h-96 bg-[#00f5ff]/3 rounded-full blur-3xl" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="mb-12"
+          className="mb-16"
         >
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-[#00f5ff] font-mono text-sm">03.</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">SKILL STACK</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-[#00f5ff]/30 to-transparent" />
+          <div className="flex items-center gap-4 mb-3">
+            <span className="text-[#ff003c] font-mono text-xs sm:text-sm font-bold tracking-widest">[ 04. TECHNICAL SKILLS // CLI ]</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-[#ff003c]/40 via-[#ff003c]/10 to-transparent" />
           </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-white font-mono uppercase tracking-tight">
+            CORE SKILLS & <span className="text-[#ff003c]">INTERACTIVE TERMINAL</span>
+          </h2>
+          <p className="text-slate-400 text-sm sm:text-base font-sans max-w-2xl mt-3">
+            An interactive command console mapping the exact technical taxonomy powering my autonomous agents, vector engines, and distributed clusters.
+          </p>
         </motion.div>
 
         {/* Terminal Window */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="relative rounded-2xl overflow-hidden border border-[#00f5ff]/20 shadow-2xl shadow-black/50"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.7 }}
+          className="glass-red-card rounded-2xl border-2 border-[#ff003c]/30 shadow-[0_15px_60px_rgba(255,0,60,0.18)] overflow-hidden hud-corner"
         >
-          {/* Terminal top bar */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#0a1628] border-b border-[#1a3a5c]">
+          {/* Terminal Window Header */}
+          <div className="flex items-center justify-between px-5 py-3.5 bg-[#140610] border-b border-[#ff003c]/30">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              <span className="w-3 h-3 rounded-full bg-[#ff003c] shadow-[0_0_8px_#ff003c]" />
+              <span className="w-3 h-3 rounded-full bg-[#ff003c]/40" />
+              <span className="w-3 h-3 rounded-full bg-[#ff003c]/20" />
+              <span className="text-xs font-mono text-slate-300 ml-2 font-bold hidden sm:inline">
+                dhanwanth@kernel-v3.8: ~/skills
+              </span>
             </div>
-            <span className="text-xs text-slate-500 font-mono">dhanwanth@srmist ~ skill-matrix</span>
-            <div className="w-16" />
+
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+              <span className="w-2 h-2 rounded-full bg-[#ff003c] animate-pulse" />
+              <span>BASH // INTERACTIVE</span>
+            </div>
           </div>
 
-          {/* Terminal body */}
-          <div className="bg-[#050a12] p-6 sm:p-8 min-h-[400px] scanline relative overflow-hidden">
-            {/* Scan line overlay */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#00f5ff]/1 to-transparent" />
-
-            {/* Welcome line */}
-            <div className="mb-6 text-slate-600 font-mono text-xs">
-              <span className="text-[#00f5ff]/40">Last login:</span> Sun Oct 4 12:00:00 on ttys000
-              <br />
-              <span className="text-[#00f5ff]/40">Welcome to Skill Matrix v2.5.0</span>
+          {/* Terminal Body */}
+          <div className="p-6 sm:p-8 space-y-6 bg-[#070206]">
+            
+            {/* Category Select Tabs */}
+            <div className="flex flex-wrap gap-2 pb-4 border-b border-[#ff003c]/15">
+              {skillCategories.map((cat, i) => (
+                <button
+                  key={cat.category}
+                  onClick={() => {
+                    setActiveTab(i)
+                    setCustomOutput(null)
+                  }}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-mono transition-all flex items-center gap-2 ${
+                    activeTab === i
+                      ? 'bg-[#ff003c] text-white font-bold shadow-[0_0_15px_rgba(255,0,60,0.5)]'
+                      : 'bg-[#140610] text-slate-400 hover:text-white border border-[#ff003c]/20'
+                  }`}
+                >
+                  <cat.icon />
+                  <span>{cat.category}</span>
+                </button>
+              ))}
             </div>
 
-            {skillCategories.map((cat, i) => (
-              <TerminalLine
-                key={cat.command}
-                category={cat}
-                delay={0}
-                visible={i < visibleCount}
-              />
-            ))}
-
-            {/* Cursor at end */}
-            {visibleCount >= skillCategories.length && (
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-[#00f5ff] font-mono text-sm">$</span>
-                <span className="typing-cursor" />
+            {/* Simulated Prompt Command */}
+            <div className="space-y-4 font-mono text-xs sm:text-sm">
+              <div className="text-slate-400 flex items-center gap-2">
+                <span className="text-[#ff003c] font-bold">root@dhanwanth-core:~$</span>
+                <span className="text-white font-semibold">
+                  {skillCategories[activeTab].command}
+                </span>
               </div>
-            )}
+
+              {/* Custom Command Output if user typed anything */}
+              {customOutput && (
+                <div className="p-4 rounded-xl bg-[#140510] border border-[#ff003c]/30 text-[#ff3366] whitespace-pre-wrap leading-relaxed">
+                  {customOutput}
+                </div>
+              )}
+
+              {/* Skills Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                {skillCategories[activeTab].skills.map((skill) => (
+                  <motion.div
+                    key={skill}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3.5 rounded-xl bg-[#12050f] border border-[#ff003c]/25 hover:border-[#ff003c]/70 transition-colors flex items-center gap-3 group"
+                  >
+                    <span className="text-[#ff003c] text-xs font-bold font-mono group-hover:translate-x-1 transition-transform">
+                      ▶
+                    </span>
+                    <span className="text-slate-200 text-xs sm:text-sm font-sans font-medium">
+                      {skill}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Interactive Command Input Box */}
+            <form
+              onSubmit={handleCommandSubmit}
+              className="mt-6 pt-4 border-t border-[#ff003c]/20 flex items-center gap-3"
+            >
+              <span className="text-[#ff003c] font-mono text-xs sm:text-sm font-bold shrink-0">
+                guest@dhanwanth:~$
+              </span>
+              <input
+                type="text"
+                value={terminalInput}
+                onChange={(e) => setTerminalInput(e.target.value)}
+                placeholder="type 'help', 'audit', 'rag', or 'agentic'..."
+                className="flex-1 bg-transparent border-none text-xs sm:text-sm font-mono text-white focus:outline-none placeholder:text-slate-600"
+              />
+              <button
+                type="submit"
+                className="p-2 rounded-lg bg-[#ff003c]/20 text-[#ff003c] hover:bg-[#ff003c] hover:text-white transition-colors"
+                title="Execute command"
+              >
+                <FiCornerDownLeft />
+              </button>
+            </form>
           </div>
         </motion.div>
-
-        {/* Skill bars — supplementary */}
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            { name: 'Python / FastAPI', pct: 92 },
-            { name: 'LangGraph / LangChain', pct: 88 },
-            { name: 'TypeScript / Next.js', pct: 85 },
-            { name: 'Docker / Kubernetes', pct: 82 },
-            { name: 'PostgreSQL / Redis', pct: 85 },
-            { name: 'Apache Kafka', pct: 80 },
-          ].map((skill, i) => (
-            <motion.div
-              key={skill.name}
-              initial={{ opacity: 0, x: -20 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.6 + i * 0.1 }}
-              className="glass rounded-xl p-4 border border-[#00f5ff]/10"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-mono text-slate-400">{skill.name}</span>
-                <span className="text-xs font-mono text-[#00f5ff]">{skill.pct}%</span>
-              </div>
-              <div className="h-1.5 bg-[#0f1f35] rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={inView ? { width: `${skill.pct}%` } : {}}
-                  transition={{ delay: 0.8 + i * 0.1, duration: 0.8, ease: 'easeOut' }}
-                  className="h-full rounded-full bg-gradient-to-r from-[#00f5ff] to-[#0066ff]"
-                  style={{ boxShadow: '0 0 8px rgba(0,245,255,0.5)' }}
-                />
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   )

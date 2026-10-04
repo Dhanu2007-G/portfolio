@@ -1,20 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { FiGithub, FiLinkedin, FiMenu, FiX } from 'react-icons/fi'
-import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { FiGithub, FiLinkedin, FiMenu, FiX, FiFileText } from 'react-icons/fi'
+
+interface NavbarProps {
+  onOpenResume?: () => void
+}
 
 const navLinks = [
   { label: 'About', href: '#about' },
+  { label: 'Experience & GDG', href: '#experience' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'DSA', href: '#dsa' },
-  { label: 'Stats', href: '#stats' },
+  { label: 'Skills & Terminal', href: '#skills' },
+  { label: 'Standards', href: '#standards' },
   { label: 'Contact', href: '#contact' },
 ]
 
-export default function Navbar() {
+export default function Navbar({ onOpenResume }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -29,120 +32,136 @@ export default function Navbar() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? 'glass border-b border-[#00f5ff]/10 shadow-lg shadow-black/50'
+          ? 'glass-red border-b border-[#ff003c]/20 shadow-2xl shadow-black/80'
           : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <motion.div
+        <div className="flex items-center justify-between h-20">
+          {/* Logo / Identity */}
+          <motion.a
+            href="#"
             whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-3 group"
           >
-            <div className="w-8 h-8 rounded border border-[#00f5ff]/50 flex items-center justify-center bg-[#00f5ff]/10">
-              <span className="text-[#00f5ff] font-mono text-sm font-bold">JD</span>
+            <div className="w-10 h-10 rounded-lg border border-[#ff003c]/60 flex items-center justify-center bg-[#ff003c]/10 shadow-[0_0_15px_rgba(255,0,60,0.3)] group-hover:border-[#ff003c] transition-colors relative overflow-hidden">
+              <span className="text-[#ff003c] font-mono text-base font-black">JD</span>
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#ff003c]/20 to-transparent pointer-events-none" />
             </div>
-            <span className="font-mono text-sm text-[#00f5ff]/70 hidden sm:block">
-              &lt;dhanwanth /&gt;
-            </span>
-          </motion.div>
+            <div className="flex flex-col">
+              <span className="font-mono text-sm font-bold text-white tracking-wider flex items-center gap-1.5">
+                DHANWANTH
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff003c] animate-pulse" />
+              </span>
+              <span className="font-mono text-[10px] text-[#ff003c] tracking-widest uppercase">
+                AI Systems Engineer
+              </span>
+            </div>
+          </motion.a>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6">
+          {/* Desktop Nav Links */}
+          <div className="hidden lg:flex items-center gap-7">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="hover-underline text-slate-400 hover:text-[#00f5ff] transition-colors duration-200 text-sm font-medium"
+                className="hover-underline-red text-slate-300 hover:text-[#ff003c] transition-colors text-xs font-mono uppercase tracking-wider"
               >
                 {link.label}
               </a>
             ))}
           </div>
 
-          {/* Social Icons */}
-          <div className="hidden md:flex items-center gap-3">
-            <motion.a
+          {/* Right side CTA & Socials */}
+          <div className="hidden sm:flex items-center gap-4">
+            <button
+              onClick={onOpenResume}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ff003c]/10 text-white border border-[#ff003c]/50 text-xs font-mono font-bold hover:bg-[#ff003c] hover:shadow-[0_0_20px_rgba(255,0,60,0.6)] transition-all group"
+            >
+              <FiFileText className="text-[#ff003c] group-hover:text-white transition-colors" />
+              <span>RESUME</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#ff003c] text-white">PDF</span>
+            </button>
+
+            <a
               href="https://github.com/Dhanu2007-G"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.1, color: '#00f5ff' }}
-              className="text-slate-400 hover:text-[#00f5ff] transition-colors duration-200 p-2 rounded-lg hover:bg-[#00f5ff]/10"
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[#ff003c]/10 hover:border hover:border-[#ff003c]/30 transition-all"
+              title="GitHub"
             >
-              <FiGithub size={18} />
-            </motion.a>
-            <motion.a
+              <FiGithub className="text-lg" />
+            </a>
+            <a
               href="https://www.linkedin.com/in/jangam-dhanwanth-766437319/"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.1 }}
-              className="text-slate-400 hover:text-[#0066ff] transition-colors duration-200 p-2 rounded-lg hover:bg-[#0066ff]/10"
+              className="p-2 rounded-lg text-slate-400 hover:text-[#ff003c] hover:bg-[#ff003c]/10 hover:border hover:border-[#ff003c]/30 transition-all"
+              title="LinkedIn"
             >
-              <FiLinkedin size={18} />
-            </motion.a>
+              <FiLinkedin className="text-lg" />
+            </a>
           </div>
 
-          {/* Mobile Hamburger */}
-          <button
-            className="md:hidden text-slate-400 hover:text-[#00f5ff] p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
-          </button>
+          {/* Mobile Menu Button */}
+          <div className="flex sm:hidden items-center gap-2">
+            <button
+              onClick={onOpenResume}
+              className="px-2.5 py-1.5 rounded bg-[#ff003c] text-white text-xs font-mono font-bold"
+            >
+              RESUME
+            </button>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 rounded-lg text-slate-400 hover:text-white border border-[#ff003c]/20"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <FiX className="text-xl" /> : <FiMenu className="text-xl" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden glass border-t border-[#00f5ff]/10"
-          >
-            <div className="px-4 py-4 flex flex-col gap-4">
-              {navLinks.map((link, i) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  onClick={() => setMenuOpen(false)}
-                  className="text-slate-300 hover:text-[#00f5ff] transition-colors duration-200 font-medium py-1"
-                >
-                  <span className="text-[#00f5ff]/50 font-mono mr-2">0{i + 1}.</span>
-                  {link.label}
-                </motion.a>
-              ))}
-              <div className="flex gap-4 pt-2 border-t border-[#00f5ff]/10">
-                <a
-                  href="https://github.com/Dhanu2007-G"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-[#00f5ff] flex items-center gap-2 text-sm"
-                >
-                  <FiGithub size={16} /> GitHub
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/jangam-dhanwanth-766437319/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-[#0066ff] flex items-center gap-2 text-sm"
-                >
-                  <FiLinkedin size={16} /> LinkedIn
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile Drawer */}
+      {menuOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="sm:hidden glass-red border-b border-[#ff003c]/30 px-6 py-5 space-y-3"
+        >
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className="block text-slate-300 hover:text-[#ff003c] text-sm font-mono py-1"
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="pt-3 border-t border-[#ff003c]/20 flex items-center gap-4">
+            <a
+              href="https://github.com/Dhanu2007-G"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-400 hover:text-[#ff003c]"
+            >
+              <FiGithub className="text-xl" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/jangam-dhanwanth-766437319/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-400 hover:text-[#ff003c]"
+            >
+              <FiLinkedin className="text-xl" />
+            </a>
+          </div>
+        </motion.div>
+      )}
     </motion.nav>
   )
 }
